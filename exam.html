@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <style>
+        *{
+            margin: 10px;
+            padding: 10px;
+            background-color: aquamarine;
+        }
+        .box{
+            height: 25px;
+            width: 5px;
+            border: 2px solid black;
+            background-color: cornsilk;
+        }
+        .btn{
+            background-color: rgb(217, 61, 196);
+            color: white;
+            margin: 12px;
+            padding: 12px;
+            margin-left: 34px;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-page">
+        <form id="login-form">
+            <h2>Login Page</h2>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br>
+            <label for="password">Password:</label>  
+
+            <input type="password" id="password" name="password" required><br>
+            <button class="btn" type="submit">Submit</button>
+            <button class="btn" type="reset">Reset</button>
+        </form>  
+
+    </div>
+
+    <div id="joke-page" style="display: none;">
+        <h1>Joke Generator</h1>
+        <p id="joke-text">Press the button for a joke!</p>
+        <p id="char-count">Character count: 0</p>
+        <button class="btn" id="get-joke">Get Joke</button>
+        <button class="btn" id="clear-joke">Clear Joke</button>
+    </div>
+    <script >const loginForm = document.getElementById('login-form');
+        const jokePage = document.getElementById('joke-page');
+        
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          if (username === 'AIMLC' && password === 'AIMLC') {
+            loginForm.style.display = 'none';
+            jokePage.style.display = 'block';
+            getJoke(); // Call the getJoke function after successful login
+          } else {
+            alert('Invalid username or password.');
+          }
+        });
+        
+        const jokeText = document.getElementById('joke-text');
+        const charCount = document.getElementById('char-count');
+        const getJokeButton = document.getElementById('get-joke');
+        const clearJokeButton = document.getElementById('clear-joke');
+        
+        function getJoke() {
+          fetch('https://v2.jokeapi.dev/joke/any')
+            .then(response => response.json())
+            .then(data => {
+              // Check the joke type (single or twopart) and display accordingly
+              if (data.type === 'single') {
+                jokeText.textContent = data.joke;
+              } else if (data.type === 'twopart') {
+                jokeText.textContent = `${data.setup}\n${data.delivery}`;
+              }
+              charCount.textContent = `Character count: ${jokeText.textContent.length}`;
+            })
+            .catch(error => {
+              console.error('Error fetching joke:', error);
+              jokeText.textContent = 'Failed to retrieve joke. Try again.';
+            });
+        }
+        
+        getJokeButton.addEventListener('click', getJoke);
+        
+        clearJokeButton.addEventListener('click', () => {
+          jokeText.textContent = 'Press the button for a joke!';
+          charCount.textContent = 'Character count: 0';
+        });</script>
+</body>
+</html>
